@@ -78,6 +78,17 @@ public class UserDAO
 
     public void deleteUser(int id)
     {
+        /*
+        try (Connection conn = UserDAO.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?");
+            stmt.setInt(3, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
 
+         */
     }
 }

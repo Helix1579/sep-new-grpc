@@ -11,7 +11,10 @@ public class StartServer
     {
         Server server = ServerBuilder.forPort(9090)
                 .addService(new UserAccessService())
-                .addService(new ProjectAccessService())
+//                .addService(new ProjectAccessService())
                 .build();
+
+        System.out.println("Server Started");
+        server.awaitTermination();
     }
 }
