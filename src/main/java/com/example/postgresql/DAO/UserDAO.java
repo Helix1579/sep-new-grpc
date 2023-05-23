@@ -76,12 +76,12 @@ public class UserDAO
         }
     }
 
-    public void deleteUser(int id)
+    public void deleteUser(String username)
     {
-        /*
+
         try (Connection conn = UserDAO.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?");
-            stmt.setInt(3, id);
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE username = ?");
+            stmt.setString(1, username);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,6 +89,5 @@ public class UserDAO
             throw new RuntimeException(e);
         }
 
-         */
     }
 }

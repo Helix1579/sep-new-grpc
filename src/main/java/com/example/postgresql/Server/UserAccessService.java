@@ -1,13 +1,24 @@
 package com.example.postgresql.Server;
+import com.example.postgresql.DAO.UserDAO;
 import com.example.protobuf.DataAccess;
 import com.example.protobuf.UserAccessGrpc;
 import io.grpc.stub.StreamObserver;
 
 public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
 {
+    private UserDAO userDAO = new UserDAO();
     @Override
-    public void createUser(DataAccess.UserCreationDto request, StreamObserver<DataAccess.Response> responseObserver) {
-        super.createUser(request, responseObserver);
+    public void createUser(DataAccess.UserCreationDto request, StreamObserver<DataAccess.Response> responseObserver)
+    {
+        userDAO.createUser(request.getUsername(), request.getPassword());
+
+        System.out.println("Received request ==> " + request);
+        DataAccess.Response response = DataAccess.Response.newBuilder()
+                .setCode(200)
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
