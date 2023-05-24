@@ -1,35 +1,19 @@
 package com.example.postgresql.DAO;
 import com.example.postgresql.model.Users;
+import com.example.protobuf.DataAccess;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class UserDAO
 {
-    private static Connection getConnection()
+    public void createUser(DataAccess.UserCreationDto dto)
     {
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "admin";
-        Connection connection = null;
-        try
-        {
-            connection = DriverManager.getConnection(url,username,password);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        return connection;
-    }
-
-    public void createUser(String username, String password)
-    {
-        try(Connection conn = UserDAO.getConnection()) {
+        try(Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO users(username, password) VALUES (?,?)");
-            stmt.setString(1,username);
-            stmt.setString(2, password);
+            stmt.setString(1,dto.getUsername());
+            stmt.setString(2, dto.getPassword());
+            System.out.println(stmt);
             stmt.executeUpdate();
         }
         catch (SQLException e)
@@ -43,7 +27,7 @@ public class UserDAO
     public Users getByUsername(String username)
     {
         Users userFound = null;
-        try(Connection conn = UserDAO.getConnection())
+        try(Connection conn =  DatabaseConnection.getConnection())
         {
             String sql = "SELECT * FROM users where username = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -63,7 +47,7 @@ public class UserDAO
     }
 
     public void updateUser(int id, String username, String password) {
-        try (Connection conn = UserDAO.getConnection()) {
+        try (Connection conn =  DatabaseConnection.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?");
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -79,7 +63,7 @@ public class UserDAO
     public void deleteUser(String username)
     {
 
-        try (Connection conn = UserDAO.getConnection()) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE username = ?");
             stmt.setString(1, username);
             stmt.executeUpdate();
@@ -89,5 +73,30 @@ public class UserDAO
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    public ArrayList<Users> lookForUser(String username)
+    {
+        ArrayList<Users> user = new ArrayList<>();
+        try (Connection conn =  DatabaseConnection.getConnection())
+        {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next())
+            {
+                if (rs.getString("username").contains(username))
+                {
+                    Users userFound = new Users(rs.getInt("id"),rs.getString("username.1"),rs.getString("password"));
+                    user.add(userFound);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

@@ -10,7 +10,7 @@ public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
     @Override
     public void createUser(DataAccess.UserCreationDto request, StreamObserver<DataAccess.Response> responseObserver)
     {
-        userDAO.createUser(request.getUsername(), request.getPassword());
+        userDAO.createUser(request);
 
         System.out.println("Received request ==> " + request);
         DataAccess.Response response = DataAccess.Response.newBuilder()
@@ -39,6 +39,7 @@ public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
     @Override
     public void getPassword(DataAccess.Username request, StreamObserver<DataAccess.Password> responseObserver) {
         super.getPassword(request, responseObserver);
+        //get by username
     }
 
     @Override

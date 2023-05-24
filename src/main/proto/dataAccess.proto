@@ -26,7 +26,6 @@ service ProjectAccess {
   rpc GetProductBacklog (Id) returns (ProductBacklogResponse);
   rpc UpdateUserStoryStatus(StatusUpdate) returns (Response);
   rpc DeleteUserStory (Id) returns (Response);
-
 }
 
 
