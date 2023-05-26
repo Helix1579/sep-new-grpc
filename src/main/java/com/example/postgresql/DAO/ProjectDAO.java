@@ -11,8 +11,9 @@ public class ProjectDAO
     public void createProject(DataAccess.ProjectCreationDto dto)
     {
         int id = 1;
-        try(Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement getId = conn.prepareStatement("SELECT count(id) FROM projects");
+        try(Connection conn = DatabaseConnection.getConnection())
+        {
+            PreparedStatement getId = conn.prepareStatement("SELECT id FROM projects ORDER BY id DESC LIMIT 1");
             ResultSet rs = getId.executeQuery();
             while (rs.next())
             {
@@ -20,7 +21,7 @@ public class ProjectDAO
                 id += 1;
             }
 
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Projects(id,project_name, is_completed,owner) VALUES (?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO projects(id,project_name, is_completed,owner) VALUES (?,?,?,?)");
             stmt.setInt(1, id);
             stmt.setString(2, dto.getTitle());
             stmt.setBoolean(3, false);
@@ -31,8 +32,6 @@ public class ProjectDAO
         catch (SQLException e)
         {
             e.printStackTrace();
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 

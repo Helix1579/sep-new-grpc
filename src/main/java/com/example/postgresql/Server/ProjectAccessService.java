@@ -11,9 +11,10 @@ import java.util.ArrayList;
 
 public class ProjectAccessService extends ProjectAccessGrpc.ProjectAccessImplBase
 {
-    private ProjectDAO projectDAO;
+    private ProjectDAO projectDAO = new ProjectDAO();
     @Override
-    public void createProject(DataAccess.ProjectCreationDto request, StreamObserver<DataAccess.ResponseWithID> responseObserver) {
+    public void createProject(DataAccess.ProjectCreationDto request, StreamObserver<DataAccess.ResponseWithID> responseObserver)
+    {
         projectDAO.createProject(request);
 
         System.out.println("Received request ==> " + request);

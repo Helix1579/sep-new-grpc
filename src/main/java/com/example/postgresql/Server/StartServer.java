@@ -9,12 +9,16 @@ public class StartServer
 {
     public static void main(String[] args) throws IOException, InterruptedException
     {
-        Server server = ServerBuilder.forPort(9090)
+        Server server = ServerBuilder.forPort(8080)
                 .addService(new UserAccessService())
-//                .addService(new ProjectAccessService())
+                .addService(new ProjectAccessService())
+                .addService(new TaskAccessService())
                 .build();
+        server.start();
 
-        System.out.println("Server Started");
+        System.out.println("Server Started : " + server.getPort());
         server.awaitTermination();
     }
 }
+
+

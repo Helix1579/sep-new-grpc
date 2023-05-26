@@ -1,29 +1,37 @@
 package com.example.postgresql.ClientTEst;
 
 import com.example.protobuf.DataAccess;
+import com.example.protobuf.ProjectAccessGrpc;
 import com.example.protobuf.UserAccessGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-import java.io.IOException;
-
 public class Test
 {
-    public static void main(String[] args) {
-        ManagedChannel managedChannel = ManagedChannelBuilder
-                .forAddress("localhost",9090)
+    public static void main(String[] args)
+    {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090)
                 .usePlaintext().build();
 
-        UserAccessGrpc.UserAccessBlockingStub stub = UserAccessGrpc.newBlockingStub(managedChannel);
+//        UserAccessGrpc.UserAccessBlockingStub userAccessBlockingStub = UserAccessGrpc.newBlockingStub(channel);
+//
+//        DataAccess.UserCreationDto userCreationDto = DataAccess.UserCreationDto.newBuilder()
+//                .setUsername("Yash")
+//                .setPassword("12345")
+//                .build();
+//        System.out.println(userCreationDto);
+//        DataAccess.Response stubUser = userAccessBlockingStub.createUser(userCreationDto);
+//        System.out.println(stubUser);
 
-        DataAccess.UserCreationDto dto = DataAccess.UserCreationDto.newBuilder()
-                .setUsername("Yash")
-                .setPassword("12345")
+        ProjectAccessGrpc.ProjectAccessBlockingStub projectAccessBlockingStub = ProjectAccessGrpc.newBlockingStub(channel);
+
+        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
+                .setOwnerUsername("Yash")
+                .setTitle("fdkhb")
                 .build();
-        System.out.println(dto);
 
-        DataAccess.Response response = stub.createUser(dto);
-        System.out.println(response);
-
+        System.out.println(projectCreationDto);
+        DataAccess.ResponseWithID stubProject = projectAccessBlockingStub.createProject(projectCreationDto);
+        System.out.println(stubProject);
     }
 }
