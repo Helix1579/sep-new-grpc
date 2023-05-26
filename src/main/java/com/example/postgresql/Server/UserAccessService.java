@@ -1,12 +1,18 @@
 package com.example.postgresql.Server;
+import com.example.postgresql.DAO.DatabaseConnection;
 import com.example.postgresql.DAO.UserDAO;
+import com.example.postgresql.model.Users;
 import com.example.protobuf.DataAccess;
 import com.example.protobuf.UserAccessGrpc;
 import io.grpc.stub.StreamObserver;
 
+import java.sql.*;
+import java.util.ArrayList;
+
 public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
 {
     private UserDAO userDAO = new UserDAO();
+
     @Override
     public void createUser(DataAccess.UserCreationDto request, StreamObserver<DataAccess.Response> responseObserver)
     {
@@ -23,7 +29,16 @@ public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
 
     @Override
     public void userByUsername(DataAccess.Username request, StreamObserver<DataAccess.UserCreationDto> responseObserver) {
-        super.userByUsername(request, responseObserver);
+        Users user =  userDAO.getByUsername(request.getUsername());
+
+        System.out.println("Received request ==> " + request);
+        DataAccess.UserCreationDto response = DataAccess.UserCreationDto.newBuilder()
+                .setUsername(user.getUsername())
+                .setPassword(user.getPassword())
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
@@ -43,7 +58,19 @@ public class UserAccessService extends UserAccessGrpc.UserAccessImplBase
     }
 
     @Override
-    public void lookForUsers(DataAccess.Username request, StreamObserver<DataAccess.FilteredUsersResponse> responseObserver) {
-        super.lookForUsers(request, responseObserver);
+    public void lookForUsers(DataAccess.Username request, StreamObserver<DataAccess.FilteredUsersResponse> responseObserver)
+    {
+        DataAccess.FilteredUsersResponse.Builder builder = DataAccess.FilteredUsersResponse.newBuilder();
+
+        ArrayList<Users> userList = userDAO.lookForUser(request.getUsername());
+
+        for (Users users : userList)
+        {
+            builder.addUsers(DataAccess.UserSearchDto.newBuilder()
+                            .setUsername(users.getUsername())
+                    .build());
+        }
+        responseObserver.onNext(builder.build());
+        responseObserver.onCompleted();
     }
 }

@@ -11,19 +11,19 @@ public class Test
 {
     public static void main(String[] args) {
         ManagedChannel managedChannel = ManagedChannelBuilder
-                .forAddress("localhost",7156)
+                .forAddress("localhost",9090)
                 .usePlaintext().build();
 
-        UserAccessGrpc.UserAccessBlockingStub blockingStub=UserAccessGrpc.newBlockingStub(managedChannel);
+        UserAccessGrpc.UserAccessBlockingStub stub = UserAccessGrpc.newBlockingStub(managedChannel);
 
-        DataAccess.UserCreationDto request=DataAccess.UserCreationDto.newBuilder()
-                .setUsername("dsfg")
-                .setPassword("545")
+        DataAccess.UserCreationDto dto = DataAccess.UserCreationDto.newBuilder()
+                .setUsername("Yash")
+                .setPassword("12345")
                 .build();
+        System.out.println(dto);
 
-        System.out.println(request);
-        DataAccess.Response response= blockingStub.createUser(request);
-        System.out.println("Received and created ==> " + response);
+        DataAccess.Response response = stub.createUser(dto);
+        System.out.println(response);
 
     }
 }

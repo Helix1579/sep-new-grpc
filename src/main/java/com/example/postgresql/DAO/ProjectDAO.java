@@ -1,21 +1,30 @@
 package com.example.postgresql.DAO;
 
-import com.example.postgresql.model.Users;
+import com.example.postgresql.model.*;
 import com.example.protobuf.DataAccess;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ProjectDAO
 {
     public void createProject(DataAccess.ProjectCreationDto dto)
     {
+        int id = 1;
         try(Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Projects(project_name, is_completed,owner) VALUES (?,?,?)");
-            stmt.setString(1, dto.getTitle());
-            stmt.setBoolean(2, false);
-            stmt.setString(3, dto.getOwnerUsername());
+            PreparedStatement getId = conn.prepareStatement("SELECT count(id) FROM projects");
+            ResultSet rs = getId.executeQuery();
+            while (rs.next())
+            {
+                id = rs.getInt(1);
+                id += 1;
+            }
+
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Projects(id,project_name, is_completed,owner) VALUES (?,?,?,?)");
+            stmt.setInt(1, id);
+            stmt.setString(2, dto.getTitle());
+            stmt.setBoolean(3, false);
+            stmt.setString(4, dto.getOwnerUsername());
             System.out.println(stmt);
             stmt.executeUpdate();
         }
@@ -43,9 +52,9 @@ public class ProjectDAO
         }
     }
 
-    public void getAllCollaborators(int id)
+    public ArrayList<String> getAllCollaborators(int id)
     {
-        List<String> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection())
         {
 
@@ -65,5 +74,88 @@ public class ProjectDAO
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
+        return list;
+    }
+    public void removeCollaborator(DataAccess.AddToProjectDto dto)
+    {
+        try(Connection conn = DatabaseConnection.getConnection())
+        {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM projects_users_of_project WHERE projects_id = ?");
+            stmt.setInt(1, dto.getProjectId());
+            stmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+    public void addUserStory(DataAccess.UserStoryMessage message)
+    {
+        try(Connection conn = DatabaseConnection.getConnection())
+        {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tasks (project_id, title) VALUES (?,?)");
+            stmt.setInt(1, message.getProjectId());
+            stmt.setString(2, message.getTaskBody());
+            stmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public ArrayList<Projects> getAllProjects(String username)
+    {
+        ArrayList<Projects> projectsList = new ArrayList<>();
+        try(Connection conn = DatabaseConnection.getConnection())
+        {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM projects where owner = ?");
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next())
+            {
+                Projects project = new Projects(rs.getInt("id"),rs.getString("project_name"));
+                projectsList.add(project);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return projectsList;
+    }
+
+    public ArrayList<Tasks> getProductBacklog(int id)
+    {
+        ArrayList<Tasks> tasksList = new ArrayList<>();
+        try(Connection conn = DatabaseConnection.getConnection())
+        {
+            PreparedStatement stmt = conn.prepareStatement("SELECT t.id AS task_id, t.title, p.id AS project_id\n" +
+                    "FROM tasks t\n" +
+                    "LEFT JOIN tasks_tasks_of_project tp ON t.id = tp.tasks_id\n" +
+                    "LEFT JOIN projects p ON p.id = tp.tasks_of_project_id");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next())
+            {
+                Tasks task = new Tasks();
+
+                task.setId(rs.getInt("task_id"));
+                task.setTitle(rs.getString("title"));
+
+                Projects project = new Projects();
+                project.setId(rs.getInt("project_id"));
+
+                task.getTasksOfProject().add(project);
+
+                tasksList.add(task);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return tasksList;
     }
 }

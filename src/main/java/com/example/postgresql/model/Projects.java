@@ -26,6 +26,11 @@ public class Projects
         this.usersOfProject = usersOfProject;
     }
 
+    public Projects(int id, String projectName) {
+        this.id = id;
+        ProjectName = projectName;
+    }
+
     public int getId() {
         return id;
     }
