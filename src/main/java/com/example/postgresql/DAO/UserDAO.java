@@ -124,7 +124,7 @@ public class UserDAO
             {
                 if (rs.getString("username").contains(username))
                 {
-                    Users userFound = new Users(rs.getInt("id"),rs.getString("username.1"),rs.getString("password"));
+                    Users userFound = new Users(rs.getInt("id"),rs.getString("username"),rs.getString("password"));
                     user.add(userFound);
                 }
             }

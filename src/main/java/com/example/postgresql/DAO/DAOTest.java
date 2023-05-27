@@ -16,7 +16,9 @@ public class DAOTest
         DataAccess.Username username = DataAccess.Username.newBuilder()
                 .setUsername("Yash")
                 .build();
-        userDAO.getByUsername("Yash");
+//        userDAO.getByUsername(username.getUsername());
+
+        userDAO.lookForUser(username.getUsername());
 
 //        ProjectDAO projectDAO = new ProjectDAO();
 //        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
