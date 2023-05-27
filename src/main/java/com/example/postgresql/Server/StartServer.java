@@ -12,7 +12,6 @@ public class StartServer
         Server server = ServerBuilder.forPort(8080)
                 .addService(new UserAccessService())
                 .addService(new ProjectAccessService())
-                .addService(new TaskAccessService())
                 .build();
         server.start();
 

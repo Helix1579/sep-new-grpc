@@ -1,9 +1,7 @@
 package com.example.postgresql.Server;
-import com.example.postgresql.DAO.DatabaseConnection;
 import com.example.postgresql.DAO.UserDAO;
 import com.example.postgresql.model.Users;
-import com.example.protobuf.DataAccess;
-import com.example.protobuf.UserAccessGrpc;
+import com.protobuf.*;
 import io.grpc.stub.StreamObserver;
 
 import java.sql.*;

@@ -1,7 +1,7 @@
 package com.example.postgresql.DAO;
 
 import com.example.postgresql.model.*;
-import com.example.protobuf.DataAccess;
+import com.protobuf.DataAccess;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,13 +21,22 @@ public class ProjectDAO
                 id += 1;
             }
 
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO projects(id,project_name, is_completed,owner) VALUES (?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO projects(id, is_completed, project_name, owner) VALUES (?,?,?,?)");
             stmt.setInt(1, id);
-            stmt.setString(2, dto.getTitle());
-            stmt.setBoolean(3, false);
+            stmt.setBoolean(2, false);
+            stmt.setString(3, dto.getTitle());
             stmt.setString(4, dto.getOwnerUsername());
             System.out.println(stmt);
-            stmt.executeUpdate();
+            ResultSet rs2 = stmt.executeQuery();
+
+            while (rs2.next())
+            {
+                System.out.println(rs2.getInt(1));
+                System.out.println(rs2.getBoolean(2));
+                System.out.println(rs2.getString(3));
+                System.out.println(rs2.getString(4));
+            }
+
         }
         catch (SQLException e)
         {
@@ -37,17 +46,22 @@ public class ProjectDAO
 
     public void addCollaborators(DataAccess.AddToProjectDto dto)
     {
-        try (Connection conn = DatabaseConnection.getConnection())
-        {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO projects(id, owner) VALUES (?,?)");
-            stmt.setInt(1, dto.getProjectId());
-            stmt.setString(2, dto.getUsername());
-            stmt.executeUpdate();
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            PreparedStatement getId = conn.prepareStatement("SELECT id FROM users where username = ?");
+            getId.setString(1, dto.getUsername());
+            ResultSet rs = getId.executeQuery();
+            while (rs.next())
+            {
+                PreparedStatement stmt = conn.prepareStatement("INSERT INTO projects_users_of_project(projects_id, users_of_project_id) VALUES (?,?)");
+                stmt.setInt(1, dto.getProjectId());
+                stmt.setInt(2,rs.getInt(1));
+                stmt.executeUpdate();
+            }
         }
         catch (SQLException e)
         {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         }
     }
 
@@ -91,12 +105,29 @@ public class ProjectDAO
     }
     public void addUserStory(DataAccess.UserStoryMessage message)
     {
+        int id = 1;
         try(Connection conn = DatabaseConnection.getConnection())
         {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tasks (project_id, title) VALUES (?,?)");
-            stmt.setInt(1, message.getProjectId());
-            stmt.setString(2, message.getTaskBody());
+            PreparedStatement getId = conn.prepareStatement("SELECT id FROM tasks ORDER BY id DESC LIMIT 1");
+            ResultSet rs = getId.executeQuery();
+            while (rs.next())
+            {
+                id = rs.getInt(1);
+                id += 1;
+            }
+
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tasks (id, is_completed, project_id, title) VALUES (?,?,?,?)");
+            stmt.setInt(1, id);
+            stmt.setBoolean(2, false);
+            stmt.setInt(3, message.getProjectId());
+            stmt.setString(4, message.getTaskBody());
+            System.out.println(stmt);
             stmt.executeUpdate();
+
+            PreparedStatement updateTable = conn.prepareStatement("INSERT INTO tasks_tasks_of_project(tasks_id, tasks_of_project_id) VALUES (?,?)");
+            updateTable.setInt(1, id);
+            updateTable.setInt(2, message.getProjectId());
+            updateTable.executeUpdate();
         }
         catch (SQLException e)
         {

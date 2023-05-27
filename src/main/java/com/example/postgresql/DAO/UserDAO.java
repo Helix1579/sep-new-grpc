@@ -1,38 +1,12 @@
 package com.example.postgresql.DAO;
 import com.example.postgresql.model.Users;
-import com.example.protobuf.DataAccess;
+import com.protobuf.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class UserDAO
 {
-    public UserDAO()
-    {
-
-
-
-
-
-//        try(Connection conn = DatabaseConnection.getConnection())
-//        {
-//            PreparedStatement stmt = conn.prepareStatement("SELECT users.id, projects.id FROM users,projects");
-//            ResultSet loadData = stmt.executeQuery();
-//
-//            while (loadData.next())
-//            {
-//                PreparedStatement insertData = conn.prepareStatement("INSERT INTO projects_users_of_project(projects_id, users_of_project_id) VALUES (?,?)");
-//                insertData.setInt(1,loadData.getInt(1));
-//                insertData.setInt(2,loadData.getInt(2));
-//                System.out.println(insertData);
-//            }
-//        }
-//        catch (SQLException e)
-//        {
-//            e.printStackTrace();
-//        }
-    }
-
     public void createUser(DataAccess.UserCreationDto dto)
     {
         int id = 1;
@@ -56,7 +30,7 @@ public class UserDAO
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
