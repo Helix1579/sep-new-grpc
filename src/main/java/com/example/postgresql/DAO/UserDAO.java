@@ -65,19 +65,19 @@ public class UserDAO
         Users userFound = null;
         try(Connection conn =  DatabaseConnection.getConnection())
         {
-            String sql = "SELECT * FROM users where username = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users where username = ?");
             stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery();
 
-            userFound = new Users(rs.getString("username"),rs.getString("password"));
-
+            while (rs.next())
+            {
+                userFound = new Users(rs.getString("username"), rs.getString("password"));
+            }
+            System.out.println(stmt);
         }
         catch (SQLException e)
         {
             e.printStackTrace();
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
         }
         return userFound;
     }

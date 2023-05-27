@@ -6,19 +6,24 @@ public class DAOTest
 {
     public static void main(String[] args)
     {
-//        UserDAO userDAO = new UserDAO();
-//        DataAccess.UserCreationDto dto = DataAccess.UserCreationDto.newBuilder()
-//                .setUsername("cxgh")
-//                .setPassword("w456")
+        UserDAO userDAO = new UserDAO();
+//        DataAccess.UserCreationDto userCreationDto = DataAccess.UserCreationDto.newBuilder()
+//                .setUsername("Yash")
+//                .setPassword("12345")
 //                .build();
-//        userDAO.createUser(dto);
+//        userDAO.createUser(userCreationDto);
 
-        ProjectDAO projectDAO = new ProjectDAO();
-        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
-                .setTitle("skygh")
-                .setOwnerUsername("cxgh")
+        DataAccess.Username username = DataAccess.Username.newBuilder()
+                .setUsername("Yash")
                 .build();
-        projectDAO.createProject(projectCreationDto);
+        userDAO.getByUsername("Yash");
+
+//        ProjectDAO projectDAO = new ProjectDAO();
+//        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
+//                .setTitle("skygh")
+//                .setOwnerUsername("cxgh")
+//                .build();
+//        projectDAO.createProject(projectCreationDto);
 
     }
 }
