@@ -25,13 +25,14 @@ public class TaskDAO
     {
         try(Connection conn = DatabaseConnection.getConnection())
         {
+            PreparedStatement updateTable = conn.prepareStatement("DELETE FROM tasks_tasks_of_project WHERE tasks_id = ?");
+            updateTable.setInt(1, id);
+            updateTable.executeUpdate();
+
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM tasks WHERE id = ?");
             stmt.setInt(1,id);
             stmt.executeUpdate();
 
-            PreparedStatement updateTable = conn.prepareStatement("DELETE FROM tasks_tasks_of_project WHERE tasks_id = ?");
-            updateTable.setInt(1, id);
-            updateTable.executeUpdate();
         }
         catch (SQLException e)
         {

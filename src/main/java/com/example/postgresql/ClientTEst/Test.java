@@ -38,23 +38,31 @@ public class Test
 //                .setTitle("fdkhb")
 //                .build();
 //
-//        System.out.println(projectCreationDto);
-//        DataAccess.ResponseWithID stubProject = projectAccessBlockingStub.createProject(projectCreationDto);
 //        System.out.println(stubProject);
 
-        DataAccess.AddToProjectDto addToProjectDto = DataAccess.AddToProjectDto.newBuilder()
-                .setProjectId(1)
-                .setUsername("Yash")
+//        DataAccess.AddToProjectDto addToProjectDto = DataAccess.AddToProjectDto.newBuilder()
+//                .setProjectId(1)
+//                .setUsername("Yash")
+//                .build();
+//        System.out.println(addToProjectDto);
+//
+
+//        DataAccess.UserStoryMessage message = DataAccess.UserStoryMessage.newBuilder()
+//                .setProjectId(1)
+//                .setTaskBody("new Task")
+//                .build();
+//        System.out.println(message);
+
+        DataAccess.Id delete = DataAccess.Id.newBuilder()
+                .setId(1)
                 .build();
-        System.out.println(addToProjectDto);
-        DataAccess.ResponseWithID response = projectAccessBlockingStub.removeCollaborator(addToProjectDto);
+
+        System.out.println(delete);
+        DataAccess.Response response = projectAccessBlockingStub.deleteUserStory(delete);
         System.out.println(response);
 
-
         /*
-        add user story
         delete user story
-        update user story
          */
     }
 }
