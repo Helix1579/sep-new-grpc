@@ -33,13 +33,28 @@ public class Test
 
         ProjectAccessGrpc.ProjectAccessBlockingStub projectAccessBlockingStub = ProjectAccessGrpc.newBlockingStub(channel);
 
-        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
-                .setOwnerUsername("Yash")
-                .setTitle("fdkhb")
-                .build();
+//        DataAccess.ProjectCreationDto projectCreationDto = DataAccess.ProjectCreationDto.newBuilder()
+//                .setOwnerUsername("Yash")
+//                .setTitle("fdkhb")
+//                .build();
+//
+//        System.out.println(projectCreationDto);
+//        DataAccess.ResponseWithID stubProject = projectAccessBlockingStub.createProject(projectCreationDto);
+//        System.out.println(stubProject);
 
-        System.out.println(projectCreationDto);
-        DataAccess.ResponseWithID stubProject = projectAccessBlockingStub.createProject(projectCreationDto);
-        System.out.println(stubProject);
+        DataAccess.AddToProjectDto addToProjectDto = DataAccess.AddToProjectDto.newBuilder()
+                .setProjectId(1)
+                .setUsername("Yash")
+                .build();
+        System.out.println(addToProjectDto);
+        DataAccess.ResponseWithID response = projectAccessBlockingStub.removeCollaborator(addToProjectDto);
+        System.out.println(response);
+
+
+        /*
+        add user story
+        delete user story
+        update user story
+         */
     }
 }

@@ -4,6 +4,7 @@ import com.example.postgresql.DAO.ProjectDAO;
 import com.example.postgresql.DAO.TaskDAO;
 import com.example.postgresql.model.Projects;
 import com.example.postgresql.model.Tasks;
+import com.example.postgresql.model.Users;
 import com.protobuf.*;
 import io.grpc.stub.StreamObserver;
 
@@ -29,12 +30,13 @@ public class ProjectAccessService extends ProjectAccessGrpc.ProjectAccessImplBas
     }
 
     @Override
-    public void getAllCollaborators(DataAccess.Id request, StreamObserver<DataAccess.FilteredUsersResponse> responseObserver) {
+    public void getAllCollaborators(DataAccess.Id request, StreamObserver<DataAccess.FilteredUsersResponse> responseObserver)
+    {
         DataAccess.FilteredUsersResponse.Builder builder = DataAccess.FilteredUsersResponse.newBuilder();
-/*
-        ArrayList<Projects> projectList = projectDAO.getAllCollaborators(request.getId());
 
-        for (Projects projects : projectList)
+        ArrayList<Users> userList = projectDAO.getAllCollaborators(request.getId());
+
+        for (Users users : userList)
         {
             builder.addUsers(DataAccess.UserSearchDto.newBuilder()
                     .setUsername(users.getUsername())
@@ -42,8 +44,6 @@ public class ProjectAccessService extends ProjectAccessGrpc.ProjectAccessImplBas
         }
         responseObserver.onNext(builder.build());
         responseObserver.onCompleted();
-
- */
     }
 
     @Override
